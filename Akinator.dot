@@ -1,0 +1,26 @@
+digraph graphname 
+ {
+node [shape = note, color = "red"]; //Описание блоков графа
+	1[fillcolor=darkolivegreen1, style="rounded,filled", label="Animal?"];
+	2[fillcolor = darkolivegreen1, style="rounded,filled", label="Cat?"];
+	1->2[label = "Yes"];
+	3[fillcolor = darkolivegreen1, style="rounded,filled", label="Poltorashka"];
+	2->3[label = "Yes"];
+	4[fillcolor = darkolivegreen1, style="rounded,filled", label="Landau"];
+	2->4[label = "No"];
+	5[fillcolor = darkolivegreen1, style="rounded,filled", label="Fachit?"];
+	1->5[label = "No"];
+	6[fillcolor = darkolivegreen1, style="rounded,filled", label="Junior?"];
+	5->6[label = "Yes"];
+	7[fillcolor = darkolivegreen1, style="rounded,filled", label="Umnov"];
+	6->7[label = "Yes"];
+	8[fillcolor = darkolivegreen1, style="rounded,filled", label="Tereshin"];
+	6->8[label = "No"];
+	10[fillcolor = darkolivegreen1, style="rounded,filled", label="Physicist?"];
+	5->10[label = "No"];
+	11[fillcolor = darkolivegreen1, style="rounded,filled", label="Mironchuk"];
+	10->11[label = "Yes"];
+	12[fillcolor = darkolivegreen1, style="rounded,filled", label="Ded_32"];
+	10->12[label = "No"];
+
+}

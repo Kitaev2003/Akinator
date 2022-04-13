@@ -1,0 +1,16 @@
+{Animal?
+	{Cat?
+		{Poltorashka}
+		{Landau}
+	}
+	{Fachit?
+		{Junior?
+			{Umnov}
+			{Tereshin}
+		}
+		{Physicist?
+				{Mironchuk}
+				{Ded_32}
+		}
+	}
+}
