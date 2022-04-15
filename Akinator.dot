@@ -1,26 +1,34 @@
 digraph graphname 
  {
 node [shape = note, color = "red"]; //Описание блоков графа
-	1[fillcolor=darkolivegreen1, style="rounded,filled", label="Animal?"];
-	2[fillcolor = darkolivegreen1, style="rounded,filled", label="Cat?"];
+	1[fillcolor=darkolivegreen1, style="rounded,filled", label="Это животное?"];
+	2[fillcolor = darkolivegreen1, style="rounded,filled", label="Это кошка?"];
 	1->2[label = "Yes"];
-	3[fillcolor = darkolivegreen1, style="rounded,filled", label="Poltorashka"];
+	3[fillcolor = darkolivegreen1, style="rounded,filled", label="Этот кот из мультика?"];
 	2->3[label = "Yes"];
-	4[fillcolor = darkolivegreen1, style="rounded,filled", label="Landau"];
-	2->4[label = "No"];
-	5[fillcolor = darkolivegreen1, style="rounded,filled", label="Fachit?"];
-	1->5[label = "No"];
-	6[fillcolor = darkolivegreen1, style="rounded,filled", label="Junior?"];
-	5->6[label = "Yes"];
-	7[fillcolor = darkolivegreen1, style="rounded,filled", label="Umnov"];
-	6->7[label = "Yes"];
-	8[fillcolor = darkolivegreen1, style="rounded,filled", label="Tereshin"];
-	6->8[label = "No"];
-	10[fillcolor = darkolivegreen1, style="rounded,filled", label="Physicist?"];
-	5->10[label = "No"];
-	11[fillcolor = darkolivegreen1, style="rounded,filled", label="Mironchuk"];
+	4[fillcolor = darkolivegreen1, style="rounded,filled", label="Он жил в деревне?"];
+	3->4[label = "Yes"];
+	5[fillcolor = darkolivegreen1, style="rounded,filled", label="Матроскин"];
+	4->5[label = "Yes"];
+	6[fillcolor = darkolivegreen1, style="rounded,filled", label="Леопольд"];
+	4->6[label = "No"];
+	7[fillcolor = darkolivegreen1, style="rounded,filled", label="Полторашка"];
+	3->7[label = "No"];
+	8[fillcolor = darkolivegreen1, style="rounded,filled", label="Буханка"];
+	2->8[label = "No"];
+	9[fillcolor = darkolivegreen1, style="rounded,filled", label="Это фачит?"];
+	1->9[label = "No"];
+	10[fillcolor = darkolivegreen1, style="rounded,filled", label="Младший?"];
+	9->10[label = "Yes"];
+	11[fillcolor = darkolivegreen1, style="rounded,filled", label="Умнов"];
 	10->11[label = "Yes"];
-	12[fillcolor = darkolivegreen1, style="rounded,filled", label="Ded_32"];
+	12[fillcolor = darkolivegreen1, style="rounded,filled", label="Терешин"];
 	10->12[label = "No"];
+	13[fillcolor = darkolivegreen1, style="rounded,filled", label="Физик?"];
+	9->13[label = "No"];
+	14[fillcolor = darkolivegreen1, style="rounded,filled", label="Мирончук"];
+	13->14[label = "Yes"];
+	15[fillcolor = darkolivegreen1, style="rounded,filled", label="Дед_32"];
+	13->15[label = "No"];
 
 }
