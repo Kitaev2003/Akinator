@@ -1,199 +1,182 @@
 #include "Akinator.h"
 
-void Akinator::Game()
+Akinator::Akinator()
 {
-	Block_Tree* tree = Tree_;
-	char* answer = new char[100];
-	bool yes;
-	bool no;
+	Tree_ = new Block_Tree;
 	
-	std::cout << "Вы начали игру Akinator основаному на бинарном дереве.\nЗагадайте персонажа, которого вы можете описать. Сейчас я его угадаю..." << std::endl;
-	std::cout << "Отвечайте на вопросы с помощью \"Yes\" или \"No\"."<< std::endl;
-	
-	while(true)
+	size_ = 0;
+}
+
+Akinator::~Akinator()
+{
+    setFree(Tree_);
+}
+
+void setFree(Block_Tree*  Tree)
+{
+ 	if (Tree)
 	{
-		std::cout << tree->data << std::endl;
+		setFree(Tree->left);
+		setFree(Tree->right);
 		
-		std::cin >> answer;
-		
-		if(CorrectScanStr(answer, &yes, &no) == false)
-		{
-			continue;
-		}
-		
-		if(yes == true)
-		{
-			if(tree->left->right->data == nullptr && tree->left->left->data == nullptr)
-			{
-				std::cout << "Вы загадали: " << tree->left->data << ". Верно?" << std::endl;
-				std::cin >> answer;
-				
-				if(CorrectScanStr(answer, &yes, &no) == false)
-				{
-					continue;
-				}
-				
-				if(yes == true)
-				{
-					std::cout << "Я так и знал, ахаха, в следующий раз придумай что-то оргинальнее" << std::endl;
-					break;
-				}
-				else
-				{
-					setInsertForGame(tree->left);
-					break;
-				} 		
-			}
-			else 
-			{
-				tree = tree->left;
-				yes = false;
-				no = false;
-				continue;
-			}
-		} 
-		
-		else
-		{
-			if(tree->right->right->data == nullptr && tree->right->left->data == nullptr)
-			{
-				std::cout << "Вы загадали: " << tree->right->data << " Верно?" << std::endl;
-				std::cin >> answer;
-			
-				if(CorrectScanStr(answer, &yes, &no) == false)
-				{
-					continue;
-				}
-				
-				if(yes == true)
-				{
-					std::cout << "Я так и знал, ахаха, в следующий раз придумай что-то оргинальнее" << std::endl;
-					break;
-				}
-				else
-				{
-					setInsertForGame(tree->right);	
-					break;
-				} 		
-			}
-			else 
-			{
-				tree = tree->right;
-				yes = false;
-				no = false;
-				continue;
-			}	
-		}	
+		delete Tree;
 	}
-	delete answer;
 }
 
-bool CorrectScanStr(char* str, bool* yes, bool* no)
+void MainDump(Block_Tree* Tree, Block_Tree* Tree_Next, std::ofstream* GRAF)
 {
-		if(( strcmp(str, "No\0") * strcmp(str, "no\0"))  == 0)
+	if(Tree_Next->data != nullptr)//Для предупреждения перехода по нулевому указателю
+	{	
+		*GRAF << "	" << Tree_Next->num << "[fillcolor = darkolivegreen1, style=\"rounded,filled\", label=\"" << Tree_Next->data <<"\"];" << std::endl;
+		
+		if(Tree->left == Tree_Next)
 		{
-			*yes = false;
-			*no = true;
-			return true;
+			*GRAF << "	"<< Tree->num << "->" << Tree_Next->num << "[label = \"Yes\"];" << std::endl;
 		}
-		else if( (strcmp(str, "Yes\0") * strcmp(str, "yes\0")) == 0)
-		{
-			*yes = true;
-			*no = false;
-			return true;
-		}
+		
 		else
 		{
-			std::cout << "Вы отвечаете неправильно, попробуйте ещё раз." << std::endl;
-			return false;
+			*GRAF << "	"<< Tree->num << "->" << Tree_Next->num << "[label = \"No\"];" << std::endl;
 		}
+	}
+	
+	if(Tree_Next->left != nullptr)//Для предупреждения перехода по нулевому указателю
+	{
+		MainDump(Tree_Next, Tree_Next->left, GRAF);// Запускаем рекурсию
+	}
+	
+	if(Tree_Next->right != nullptr)//Для предупреждения перехода по нулевому указателю
+	{
+		MainDump(Tree_Next, Tree_Next->right, GRAF);//Запускаем рекурсию
+	}
 }
 
-void Akinator::setInsertForGame(Block_Tree* tree)
+void Akinator::getDump()
 {
-		
-	char* answer_no = new char[100];
-	char* answer_yes = new char[100];
-	char* questen = new char[100];
-	
-	std::cout << "Хорошо, вы меня переиграли, поздравляю Вас. Чтобы я стал лучше, помогите мне :-)" <<std::endl;
-	std::cout << "Введите такой вопрос, чтобы ответ \"Yes\" указывал на вашего персонажа" << std::endl;
+	std::ofstream GRAF;//Обьявляем переменную типа fstream
+	GRAF.open("Akinator.dot");
 
-	size_t i = 0;
-	char symbol;
+	GRAF << "digraph graphname \n {" << std::endl;// digtaph, так как нужно указывать конкретное направление перехода к блоку
+	GRAF << "node [shape = note, color = \"red\"]; //Описание блоков графа"<< std::endl;
+
+	GRAF << "	" << Tree_->num << "[fillcolor=darkolivegreen1, style=\"rounded,filled\", label=\"" << Tree_->data <<"\"];" << std::endl;
+
+	MainDump(Tree_, Tree_->left, &GRAF);//Левое дерево описание блоков
+	MainDump(Tree_, Tree_->right, &GRAF);//Правое дерево описание блоков	
 	
-	getchar();
-	while( (symbol = getchar()) != '?')
+	GRAF << "\n}" << std::endl;
+	GRAF.close();//Закрываем файл
+	
+	system("dot -Tpng Akinator.dot -o Akinator");//Делаем PNG-Дерево
+}
+
+void Akinator::setInsert(Block_Tree* elem, char* str)
+{
+	assert(elem); 
+	assert(str);
+	
+	MakeStringForAkinator(str);
+	
+	elem->data = str;
+
+	size_++;
+	elem->num = size_;//for graphviz 
+	
+
+	elem->left = new Block_Tree;	
+	elem->right = new Block_Tree;	
+}
+
+void MakeStringForAkinator(char* str)
+{
+	size_t i = 0;
+	size_t len = strlen(str);
+	
+	if(str[0] == '{' || str[0] == '(' || str[0] == '[')
 	{
-		questen[i] = symbol;
-		i++;
+		while(i < len)
+		{
+			str[i] = str[i + 1];
+			i++;
+		}
 	} 
-	questen[i] = '?';
-	questen[i+1] = '\0';
+	
+	if(str[len] == '}' || str[len] == ')' || str[len] == ']' || str[len-2] == '}' || str[len-2] == ')' || str[len-2] == ']')
+	{
+		str[len-2] ='\0';
+	}
+}
+
+size_t StringDeleteTab(char* str, size_t len)
+{
+	size_t len_tab = 0;
+	size_t i = 0;
+	
+	while(str[i] == 9)// 9 - TAB in the ASCII
+	{
+		len_tab++;
+		i++;	
+	}
+	
 	i = 0;
 	
-	std::cout<< "Введите персонажа которого вы загадали?" << std::endl;
-	
-	getchar();
-	while((symbol = getchar()) != '\n')
+	while((i+len_tab) <= len)
 	{
-		answer_yes[i] = symbol;
+		str[i] = str[i+len_tab];
 		i++;
-	} 
+	}
 	
-	answer_yes[i] = '\0';
-	
-	
-	strcpy(answer_no, tree->data);
-
-	delete tree->data;
-	
-	tree->data = questen;
-	
-	setInsert(tree->right, answer_no);
-	setInsert(tree->left, answer_yes);
-		
-	std::cout << "Спасибо за помощь" << std::endl;
+	return len - len_tab; 
 }
 
-void Akinator::getPrintInFile()
+void Akinator::setAkinator_Reader()
 {
-	std::ofstream OUT;
-	OUT.open("Akinator_Order.txt");
+	std::ifstream READ;
+	READ.open("Akinator_Order.txt");
 	
-	if (!OUT.is_open()) // если файл не открыт
+	if (!READ.is_open()) // если файл не открыт
 	{
         	std::cout << "Файл не может быть открыт!" << std::endl;
 	}
 	
-	OUT << "{" << Tree_->data << std::endl;
+	char* buffer = new char [100];
 	
-	DumpTxtFile(Tree_->left, &OUT);
-	DumpTxtFile(Tree_->right, &OUT);
+	READ.getline(buffer, 100, '\n');
+	setInsert(Tree_, buffer);
 	
-	OUT << "}";
+	setAkinator_Make(Tree_->left, &READ);
+	setAkinator_Make(Tree_->right, &READ);//
 	
-	OUT.close();
+	READ.close();
 }
 
-void DumpTxtFile(Block_Tree* tree, std::ofstream* OUT)
-{		
-	if(tree->left->data != nullptr || tree->right->data != nullptr )
+void Akinator::setAkinator_Make(Block_Tree* elem, std::ifstream* READ)
+{
+	char* buffer = new char [100];
+	
+	READ -> getline(buffer, 100, '\n');//Считываем строку полностью
+	
+	size_t len = StringDeleteTab(buffer, strlen(buffer));// Удаляем пробелы перед текстом и возвращаем длину buffer после изменений
+
+	//Заполняем дереево
+	if(buffer[0] == '{' && buffer[len-1] != '}')// Запускаем рекурсию для узла типа "{Fachit?"
 	{
-		*OUT << "{" << tree->data << std::endl;
-		if(tree->left->data != nullptr)
-		{
-			DumpTxtFile(tree->left, OUT);
-		}
-		if(tree->right != nullptr)
-		{
-			DumpTxtFile(tree->right, OUT);
-		}
-		*OUT << "}" << std::endl;
+		setInsert(elem, buffer);
+	
+		assert(elem->left);
+		setAkinator_Make(elem->left, READ);//рекурсия для правых
+			
+		assert(elem->right);
+		setAkinator_Make(elem->right, READ);//рекурсия для правых
 	}
 	
-	if (tree->left->data == nullptr && tree->right->data == nullptr && tree->data != nullptr)
+	if(buffer[0] == '{' && buffer[len-1] == '}')//Добавлем в дерево ветви типа "{Umnov}"
 	{
-		*OUT << "{" << tree->data << "}" << std::endl;
+		setInsert(elem, buffer);
+	}
+	
+	if(buffer[0] == '}') 
+	{//Но в тоже время запускаем рекурсию, так как узел "{Fachit?" спустя несколько строк примет скобку за узел
+		setAkinator_Make(elem, READ);
 	}
 }
