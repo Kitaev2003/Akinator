@@ -12,7 +12,7 @@ void Akinator::Game()
 	
 	while(true)
 	{
-		std::cout << tree->data << std::endl;
+		std::cout << "*" << tree->data << std::endl;
 		
 		std::cin >> answer;
 		
